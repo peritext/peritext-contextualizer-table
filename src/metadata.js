@@ -12,7 +12,19 @@ export default {
     acceptedResourceTypes: [{type: 'table'}],
     block: {
       expandable: false,
-      options: []
+      options: [
+        {
+          id: 'pageRowsLimit',
+          title: {
+            fr: 'Nombre de lignes à afficher dans les rendus "page"',
+            en: 'Number of rows to display in "page" outputs',
+          },
+          type: 'number',
+          default: 50,
+          minimum: 1,
+          maximum: 100000
+        },
+      ]
     }
   }
 }

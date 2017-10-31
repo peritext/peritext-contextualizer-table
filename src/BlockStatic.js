@@ -2,11 +2,13 @@ import React from 'react';
 
 export default ({
   resource,
-  contextualizer,
+  contextualizer: {
+    pageRowsLimit
+  },
   contextualization
 }) => {
-  const data = resource.data;
-  // this is weak
+  const data = pageRowsLimit && typeof pageRowsLimit === 'number' ? resource.data.slice(0, pageRowsLimit) : resource.data;
+  // @todo: handle columns definition in a better way than inspecting the keys of the first object
   const columns = Object.keys(data[0]).map(key => ({
     Header: key,
     accessor: key

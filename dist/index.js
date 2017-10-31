@@ -134,7 +134,17 @@ exports.default = {
     acceptedResourceTypes: [{ type: 'table' }],
     block: {
       expandable: false,
-      options: []
+      options: [{
+        id: 'pageRowsLimit',
+        title: {
+          fr: 'Nombre de lignes à afficher dans les rendus "page"',
+          en: 'Number of rows to display in "page" outputs'
+        },
+        type: 'number',
+        default: 50,
+        minimum: 1,
+        maximum: 100000
+      }]
     }
   }
 };
@@ -218,11 +228,11 @@ function _interopRequireDefault(obj) { return obj && obj.__esModule ? obj : { de
 
 exports.default = function (_ref) {
   var resource = _ref.resource,
-      contextualizer = _ref.contextualizer,
+      pageRowsLimit = _ref.contextualizer.pageRowsLimit,
       contextualization = _ref.contextualization;
 
-  var data = resource.data;
-  // this is weak
+  var data = pageRowsLimit && typeof pageRowsLimit === 'number' ? resource.data.slice(0, pageRowsLimit) : resource.data;
+  // @todo: handle columns definition in a better way than inspecting the keys of the first object
   var columns = (0, _keys2.default)(data[0]).map(function (key) {
     return {
       Header: key,
@@ -230,22 +240,22 @@ exports.default = function (_ref) {
     };
   });
   return _react2.default.createElement(
-    "figure",
+    'figure',
     {
-      className: "peritext-contextualization peritext-contextualization-block peritext-contextualization-codex peritext-contextualizer-table"
+      className: 'peritext-contextualization peritext-contextualization-block peritext-contextualization-codex peritext-contextualizer-table'
     },
     _react2.default.createElement(
-      "table",
+      'table',
       null,
       _react2.default.createElement(
-        "thead",
+        'thead',
         null,
         _react2.default.createElement(
-          "tr",
+          'tr',
           null,
           columns.map(function (column, index) {
             return _react2.default.createElement(
-              "th",
+              'th',
               { key: index },
               column.Header
             );
@@ -253,15 +263,15 @@ exports.default = function (_ref) {
         )
       ),
       _react2.default.createElement(
-        "tbody",
+        'tbody',
         null,
         data.map(function (row, rowIndex) {
           return _react2.default.createElement(
-            "tr",
+            'tr',
             { key: rowIndex },
             columns.map(function (column, index) {
               return _react2.default.createElement(
-                "th",
+                'th',
                 { key: index },
                 row[column.accessor]
               );
