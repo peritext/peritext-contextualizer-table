@@ -8,7 +8,10 @@ export default ({
   contextualization
 }) => {
   const data = pageRowsLimit && typeof pageRowsLimit === 'number' ? resource.data.slice(0, pageRowsLimit) : resource.data;
-  // @todo: handle columns definition in a better way than inspecting the keys of the first object
+  /*
+   * @todo handle columns definition in a better way than inspecting the keys of the first object
+   * @body an expensive way would be to reduce all objects' keys to a hashmap and use it for the columns (is there another way to do that ?)
+   */
   const columns = Object.keys(data[0]).map(key => ({
     Header: key,
     accessor: key
