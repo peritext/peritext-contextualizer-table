@@ -65,7 +65,7 @@ class BlockStatic extends Component {
         const data = this.formatData(response.data, dataset);
         this.setState({
           data,
-          columns= computeColumns(data),
+          columns: computeColumns(data),
           loading: false,
         })
       })
@@ -104,7 +104,7 @@ class BlockStatic extends Component {
         contextualizer: {
           pageRowsLimit
         },
-      }
+      },
       state: {
         columns = [],
         data = [],
