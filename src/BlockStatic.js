@@ -1,22 +1,121 @@
-import React from 'react';
+import React, {Component} from 'react';
+import PropTypes from 'prop-types';
+import {get} from 'axios';
+import dsv from 'd3-dsv';
 
-export default ({
-  resource,
-  contextualizer: {
-    pageRowsLimit
-  },
-  contextualization
-}) => {
-  const data = pageRowsLimit && typeof pageRowsLimit === 'number' ? resource.data.slice(0, pageRowsLimit) : resource.data;
-  /*
-   * @todo handle columns definition in a better way than inspecting the keys of the first object
-   * @body an expensive way would be to reduce all objects' keys to a hashmap and use it for the columns (is there another way to do that ?)
+class BlockStatic extends Component {
+
+  static contextTypes = {
+    datasets: propTypes.object,
+  }
+
+  constructor (props) {
+    super(props);
+  }
+
+  componentWillMount() {
+    this.updateData(this.props);
+  }
+
+  componentWillReceiveProps (nextProps) {
+    if (
+        this.props.data !== nextProps.data ||
+        getDataset(this.props) !== getDataset(nextProps)
+      ) {
+      this.updateData(nextProps);
+    }
+  }
+
+  getDataset = (props) => {
+    return this.context && 
+           this.context.datasets && 
+           this.context.datasets[props.data.dataset]
+  }
+
+  formatData = (data, dataset) => {
+    switch(dataset.format) {
+      case 'csv':
+        return dsv.csvParse(data);
+      case 'tsv':
+        return dsv.tsvParse(data);
+      case 'json':
+      default:
+        return data;
+    }
+  }
+
+  updateData = (props) => {
+    const dataset = this.getDataset(props);
+    if (dataset === undefined) {
+      return;
+    }
+    if (dataset.rawData) {
+      this.setState({
+        loading: false,
+        data: dataset.rawData,
+        error: undefined,
+      })
+    } else if (dataset.uri) {
+      this.setState({
+        loading: true,
+        error: undefined,
+      });
+      axios.get(dataset.uri)
+      .then((response) => {
+        const data = this.formatData(response.data, dataset);
+        this.setState({
+          data,
+          columns= computeColumns(data),
+          loading: false,
+        })
+      })
+      .catch((error) => {
+        this.setState({
+          error
+        })
+      });
+    } else {
+      this.setState({
+        error: 'no-dataset'
+      })
+    }
+  }
+
+  /**
+   * Determines of the columns of a dataset
    */
-  const columns = Object.keys(data[0]).map(key => ({
-    Header: key,
-    accessor: key
-  }));
-  return (
+  computeColumns = (data) => {
+    const keys = {};
+    data.forEach(datum => {
+      Object.keys(datum).forEach(key => {
+        keys[key] = 'bla'
+      })
+    });
+    const columns = Object.keys(keys).map(key => ({
+      Header: key,
+      accessor: key
+    }));
+    return columns;
+  }
+
+  render () {
+    const {
+      props: {
+        contextualizer: {
+          pageRowsLimit
+        },
+      }
+      state: {
+        columns = [],
+        data = [],
+        error,
+        loading = false
+      }
+    } = this;
+
+    const realData = pageRowsLimit && typeof pageRowsLimit === 'number' ? data.slice(0, pageRowsLimit) : data;
+
+    return (
     <figure
       className="peritext-contextualization peritext-contextualization-block peritext-contextualization-codex peritext-contextualizer-table"
     >
@@ -30,7 +129,7 @@ export default ({
         </thead>
         <tbody>
           {
-            data.map((row, rowIndex) => (
+            realData.map((row, rowIndex) => (
               <tr key={rowIndex}>
                 {
                   columns.map((column, index) => (<th key={index}>{row[column.accessor]}</th>))
@@ -41,5 +140,10 @@ export default ({
         </tbody>
       </table>
     </figure>
-  )
+     );
+  }
 }
+
+
+
+export default BlockStatic;
