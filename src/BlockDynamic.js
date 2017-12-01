@@ -7,7 +7,7 @@ import ReactTable from 'react-table';
 class BlockDynamic extends Component {
 
   static contextTypes = {
-    datasets: propTypes.object,
+    datasets: PropTypes.object,
   }
 
   constructor (props) {
