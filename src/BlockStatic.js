@@ -12,6 +12,11 @@ class BlockStatic extends Component {
 
   constructor (props) {
     super(props);
+    this.state = {
+      loading: true,
+      data: undefined
+    }
+    updateData(props, this);
   }
 
   componentWillMount() {
