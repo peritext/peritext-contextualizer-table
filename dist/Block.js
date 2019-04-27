@@ -20,11 +20,16 @@ function _interopRequireDefault(obj) { return obj && obj.__esModule ? obj : { de
 /* eslint no-new-func : 0 */
 const Block = ({
   resource,
-  contextualizer,
+  contextualizer = {},
   // contextualization,
   renderingMode = 'screened',
   assets = {}
 }) => {
+  const {
+    parameters = {
+      simpleTable: false
+    }
+  } = contextualizer;
   const appropriateAsset = (0, _peritextUtils.chooseAppropriateAsset)(resource, _meta.default.profile.block.assetPickingRules.element[renderingMode], assets);
 
   if (appropriateAsset) {
@@ -37,6 +42,14 @@ const Block = ({
 
     switch (renderingMode) {
       case 'screened':
+        if (parameters.simpleTable) {
+          return _react.default.createElement(_StaticTable.default, {
+            data: data,
+            columns: columns,
+            contextualizer: contextualizer
+          });
+        }
+
         return _react.default.createElement(_DynamicTable.default, {
           data: data,
           contextualizer: contextualizer,

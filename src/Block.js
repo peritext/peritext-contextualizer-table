@@ -10,11 +10,12 @@ import StaticTable from './StaticTable';
 
 const Block = ( {
   resource,
-  contextualizer,
+  contextualizer = {},
   // contextualization,
   renderingMode = 'screened',
   assets = {},
 } ) => {
+  const {parameters = {simpleTable: false}} = contextualizer;
   const appropriateAsset = chooseAppropriateAsset( resource, meta.profile.block.assetPickingRules.element[renderingMode], assets );
   if ( appropriateAsset ) {
     const data = appropriateAsset.asset.data || [];
@@ -27,6 +28,15 @@ const Block = ( {
     } ) );
     switch ( renderingMode ) {
       case 'screened':
+        if (parameters.simpleTable) {
+          return (
+            <StaticTable
+              data={ data }
+              columns={ columns }
+              contextualizer={ contextualizer }
+            />
+          )
+        }
         return (
           <DynamicTable
             data={ data }

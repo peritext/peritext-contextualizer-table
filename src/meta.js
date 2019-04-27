@@ -15,6 +15,9 @@ export default {
         pagedMaxRows: {
           type: 'number'
         },
+        simpleTable: {
+          type: 'boolean'
+        },
         screenedMaxRows: {
           type: 'number'
         },
