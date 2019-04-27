@@ -1,6 +1,6 @@
 {
   "name": "peritext-contextualizer-table",
-  "version": "0.1.0",
+  "version": "0.1.1",
   "description": "Peritext default table contextualizer",
   "main": "dist/index.js",
   "scripts": {
