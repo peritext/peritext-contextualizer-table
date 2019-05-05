@@ -30,19 +30,23 @@ const Block = ( {
       case 'screened':
         if (parameters.simpleTable) {
           return (
-            <StaticTable
-              data={ data }
-              columns={ columns }
-              contextualizer={ contextualizer }
-            />
+            <div className="static-table-container">
+              <StaticTable
+                data={ data }
+                columns={ columns }
+                contextualizer={ contextualizer }
+              />
+            </div>
           )
         }
         return (
+          <div className="dynamic-table-container">
           <DynamicTable
             data={ data }
             contextualizer={ contextualizer }
             columns={ columns }
           />
+          </div>
         );
       case 'paged':
       case 'micro':

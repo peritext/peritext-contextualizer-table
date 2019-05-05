@@ -43,18 +43,22 @@ const Block = ({
     switch (renderingMode) {
       case 'screened':
         if (parameters.simpleTable) {
-          return _react.default.createElement(_StaticTable.default, {
+          return _react.default.createElement("div", {
+            className: "static-table-container"
+          }, _react.default.createElement(_StaticTable.default, {
             data: data,
             columns: columns,
             contextualizer: contextualizer
-          });
+          }));
         }
 
-        return _react.default.createElement(_DynamicTable.default, {
+        return _react.default.createElement("div", {
+          className: "dynamic-table-container"
+        }, _react.default.createElement(_DynamicTable.default, {
           data: data,
           contextualizer: contextualizer,
           columns: columns
-        });
+        }));
 
       case 'paged':
       case 'micro':
